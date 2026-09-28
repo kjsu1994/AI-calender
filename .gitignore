@@ -1,0 +1,13 @@
+.env
+.tools/
+**/node_modules/
+**/dist/
+**/build/
+**/.gradle/
+**/test-results/
+**/playwright-report/
+*.log
+*.tsbuildinfo
+backups/
+.idea/
+.vscode/

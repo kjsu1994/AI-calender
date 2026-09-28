@@ -1,0 +1,18 @@
+# docker compose -f compose.yaml -f compose.cloudflare.yaml up --build -d
+# Cloudflare published route: ctfmon.shop -> HTTP web:80
+# Do not combine with compose.https.yaml: the tunnel uses HTTP inside Compose.
+services:
+  backend:
+    environment:
+      APP_BASE_URL: ${CLOUDFLARE_PUBLIC_URL:?Set CLOUDFLARE_PUBLIC_URL in .env}
+      COOKIE_SECURE: "true"
+      DEMO_MODE: "false"
+  cloudflared:
+    image: cloudflare/cloudflared:2026.9.3
+    command: [tunnel, --no-autoupdate, run]
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?Set the Cloudflare Tunnel token in .env}
+    depends_on:
+      web:
+        condition: service_started
+    restart: unless-stopped

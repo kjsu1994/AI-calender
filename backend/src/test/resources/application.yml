@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:dayvoice;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+app:
+  base-url: http://localhost:8085
+  demo-mode: true
+  encryption-key: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+  allowed-emails: test@example.com
+  google-client-id: test
+  google-client-secret: test
+  gemini-api-key: test
+  gemini-model: test
+  ffmpeg: ffmpeg

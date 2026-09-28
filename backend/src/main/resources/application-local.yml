@@ -1,0 +1,8 @@
+# Isolated developer sample store. Never enable this profile for real Google accounts.
+spring:
+  datasource:
+    url: jdbc:h2:file:./build/local-db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+app:
+  demo-mode: true

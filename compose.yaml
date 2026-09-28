@@ -1,0 +1,54 @@
+name: dayvoice
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: dayvoice
+      POSTGRES_USER: dayvoice
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Run scripts/setup.ps1 first}
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U dayvoice -d dayvoice"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  backend:
+    build: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/dayvoice
+      SPRING_DATASOURCE_USERNAME: dayvoice
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      ALLOWED_EMAILS: ${ALLOWED_EMAILS:-}
+      LOCAL_LOGIN_USERNAME: ${LOCAL_LOGIN_USERNAME:-}
+      LOCAL_LOGIN_EMAIL: ${LOCAL_LOGIN_EMAIL:-}
+      LOCAL_LOGIN_PASSWORD_HASH_BASE64: ${LOCAL_LOGIN_PASSWORD_HASH_BASE64:-}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8085}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY:?Run scripts/setup.ps1 first}
+      DEMO_MODE: ${DEMO_MODE:-true}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, curl, -fsS, http://localhost:8080/api/health]
+      interval: 15s
+      timeout: 5s
+      start_period: 60s
+      retries: 5
+    restart: unless-stopped
+  web:
+    build: ./frontend
+    ports:
+      - "${APP_PORT:-8085}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  database:

@@ -1,0 +1,9 @@
+# Temporary real-account verification while the local Docker engine is unavailable.
+# Stored separately from samples; OAuth refresh tokens retain AES-GCM encryption.
+spring:
+  datasource:
+    url: jdbc:h2:file:./build/account-check-db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+app:
+  demo-mode: false

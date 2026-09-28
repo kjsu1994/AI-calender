@@ -1,0 +1,29 @@
+# Optional: docker compose -f compose.yaml -f compose.https.yaml up --build -d
+# First generate local certificates with scripts/setup-local-https.ps1.
+# Keep APP_BASE_URL for HTTP; set HTTPS_BASE_URL only when choosing another
+# canonical HTTPS hostname (also update the Google OAuth redirect URI).
+services:
+  backend:
+    environment:
+      APP_BASE_URL: ${HTTPS_BASE_URL:-https://localhost:${APP_PORT:-8085}}
+      COOKIE_SECURE: "true"
+  web:
+    volumes:
+      - type: bind
+        source: ./frontend/nginx.https.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./.tools/certs/server.pem
+        target: /etc/nginx/certs/server.pem
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./.tools/certs/server-key.pem
+        target: /etc/nginx/certs/server-key.pem
+        read_only: true
+        bind:
+          create_host_path: false

@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 12h
+      cookie:
+        http-only: true
+        same-site: lax
+        secure: ${COOKIE_SECURE:false}
+spring:
+  application:
+    name: dayvoice
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/dayvoice}
+    username: ${SPRING_DATASOURCE_USERNAME:dayvoice}
+    password: ${SPRING_DATASOURCE_PASSWORD:dayvoice}
+  servlet:
+    multipart:
+      max-file-size: 12MB
+      max-request-size: 13MB
+  threads:
+    virtual:
+      enabled: true
+app:
+  base-url: ${APP_BASE_URL:http://localhost:8085}
+  demo-mode: ${DEMO_MODE:false}
+  allowed-emails: ${ALLOWED_EMAILS:}
+  encryption-key: ${TOKEN_ENCRYPTION_KEY:}
+  google-client-id: ${GOOGLE_CLIENT_ID:}
+  google-client-secret: ${GOOGLE_CLIENT_SECRET:}
+  gemini-api-key: ${GEMINI_API_KEY:}
+  gemini-model: ${GEMINI_MODEL:gemini-3.5-flash-lite}
+  ffmpeg: ${FFMPEG_PATH:ffmpeg}
